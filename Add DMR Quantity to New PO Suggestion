@@ -1,0 +1,13 @@
+var data = (from sug in ttSugPoDtl
+            join dmr in Db.DMRHead.With(LockHint.NoLock) on new {sug.Company,sug.PartNum}
+            equals new {dmr.Company,dmr.PartNum}
+            where sug.Company == Session.CompanyID
+            && dmr.OpenDMR == true
+            select new {Sug = sug, DMR = dmr.TotDiscrepantQty - (dmr.TotAcceptedQty + dmr.TotRejectedQty)});
+            
+            
+
+foreach(var item in data)
+{
+      item.Sug["DMR_Qty_c"] = item.DMR;
+}
